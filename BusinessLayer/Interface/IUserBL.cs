@@ -1,0 +1,14 @@
+﻿using CommonLayer.Model;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace BusinessLayer.Interface
+{
+    public interface IUserBL
+    {
+        public UserReg Registration(UserReg userReg);
+        public UserLogin Login(UserLogin userLogin);
+
+    }
+}

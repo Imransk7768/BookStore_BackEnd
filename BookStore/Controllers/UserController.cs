@@ -1,16 +1,17 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-
+using System.Security.Claims;
 
 namespace BookStore.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
 
-    public class UserController : Controller
+    public class UserController : ControllerBase
     {
         private readonly IUserBL iuserBL;
 
@@ -19,7 +20,8 @@ namespace BookStore.Controllers
             this.iuserBL = iuserBL;
         }
 
-        [HttpPost("Register")]
+        [HttpPost]
+        [Route("Register")]
         //for registration
         public IActionResult RegisterUser(UserReg userReg)
         {
@@ -35,19 +37,20 @@ namespace BookStore.Controllers
                     return BadRequest(new { success = false, message = "Registration is not successful." });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
         }
 
         //for login
-        [HttpPost("Login")]
-        public IActionResult LoginUser(UserLogin userLogin)
+        [HttpPost]
+        [Route("Login")]
+        public IActionResult LoginUser(string email, string password)
         {
             try
             {
-                var result = iuserBL.Login(userLogin);
+                var result = iuserBL.Login(email, password);
                 if (result != null)
                 {
                     return Ok(new { success = true, message = "Login succesful", data = result });
@@ -63,6 +66,49 @@ namespace BookStore.Controllers
             }
         }
 
-
+        [HttpPost]
+        [Route("ForgetPassword")]
+        public IActionResult ForgetPassword(string email)
+        {
+            try
+            {
+                string token = iuserBL.ForgetPassword(email);
+                if (token != null)
+                {
+                    return Ok(new { success = true, Message = "Please check your Email.Token sent succesfully." });
+                }
+                else
+                {
+                    return this.BadRequest(new { Success = false, Message = "Email not registered" });
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        [Authorize]
+        [HttpPost]
+        [Route("ResetPassword")]
+        public IActionResult ResetPassword(string newPassword, string confirmPassword)
+        {
+            try
+            {
+                var email = User.FindFirst(ClaimTypes.Email).Value.ToString();
+                var data = iuserBL.ResetPassword(email, newPassword, confirmPassword);
+                if (data != null)
+                {
+                    return Ok(new { success = true, message = "Reset Successful", data = data });
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "Reset denied." });
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

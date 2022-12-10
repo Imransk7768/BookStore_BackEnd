@@ -10,7 +10,11 @@ namespace RepositoryLayer.Interface
     public interface IUserRL
     {
         public UserReg Registration(UserReg userReg);
-        public UserLogin Login(UserLogin userLogin);
+        public string Login(string email, string password);
+
+        //public UserLogin Login(UserLogin userLogin);
+        public string ForgetPassword(string Email);
+        public bool ResetPassword(string email, string newPassword, string confirmPassword);
 
     }
 }

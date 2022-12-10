@@ -25,18 +25,39 @@ namespace BusinessLayer.Service
                 throw ex;
             }
         }
-        public UserLogin Login(UserLogin userLogin)
+        public string Login(string email, string password)
         {
             try
             {
-                return iuserRL.Login(userLogin);
+                return iuserRL.Login(email,password);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
-
+        public string ForgetPassword(string Email)
+        {
+            try
+            {
+                return iuserRL.ForgetPassword(Email);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool ResetPassword(string email,string newPassword,string confirmPassword)
+        {
+            try
+            {
+                return iuserRL.ResetPassword(email,newPassword,confirmPassword);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
     }
 }

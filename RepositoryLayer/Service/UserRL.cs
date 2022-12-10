@@ -22,10 +22,9 @@ namespace RepositoryLayer.Service
         }
         public UserReg Registration(UserReg userReg)
         {
-            //con = new SqlConnection(iConfiguration["ConnectionStrings:Bookstore"]);
-            try
-            {
-                using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:Bookstore"]))
+            using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:Bookstore"]))
+                //con = new SqlConnection(iConfiguration["ConnectionStrings:Bookstore"]);
+                try
                 //using (con)
                 {
                     SqlCommand cmd = new SqlCommand("spRegister", con);
@@ -45,52 +44,130 @@ namespace RepositoryLayer.Service
                     }
                     return null;
                 }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-        public UserLogin Login(UserLogin userLogin)
-        {
-            try
-            {
-                using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:BookStore"]))
+
+                catch (Exception ex)
                 {
+                    throw;
+                }
+        }
+        public string Login(string email, string password)
+        {
+            using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:BookStore"]))
+                try
+                {
+
                     SqlCommand cmd = new SqlCommand("spLogin", con);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Email", userLogin.Email);
-                    cmd.Parameters.AddWithValue("@Password", userLogin.Password);
+                    cmd.Parameters.AddWithValue("@Email", email);
+                    cmd.Parameters.AddWithValue("@Password", password);
                     con.Open();
                     var resultcnt = (Int32)cmd.ExecuteScalar();
-                    if (resultcnt == 1)
-                        return userLogin;
+                    //if (resultcnt == 1)
+                    //return userLogin;
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            email = Convert.ToString(dr["Email"] == DBNull.Value ? default : dr["Email"]);
+                        }
+                        var token = this.GenerateSecurityToken(email);
+                        new MSMQ().sendData2Queue(token);
+                        return token;
+                    }
                     else
                         con.Close();
                     return null;
                 }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+        }
+
+        public string ForgetPassword(string Email)
+        {
+            using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:BookStore"]))
+                try
+                {
+                    SqlCommand cmd = new SqlCommand("spForgetPassword", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Email", Email);
+                    con.Open();
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            Email = Convert.ToString(dr["Email"] == DBNull.Value ? default : dr["Email"]);
+                        }
+                        var token = this.GenerateSecurityToken(Email);
+                        new MSMQ().sendData2Queue(token);
+                        return token;
+                    }
+                    con.Close();
+                    return null;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+        }
+        public bool ResetPassword(string email, string newPassword, string confirmPassword)
+        {
+            using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:BookStore"]))
+                try
+                {
+                    if (newPassword == confirmPassword)
+                    {
+                        SqlCommand cmd = new SqlCommand("spResetPassword", con);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@Email", email);
+                        cmd.Parameters.AddWithValue("@Password", newPassword);
+                        con.Open();
+                        SqlDataReader dr = cmd.ExecuteReader();
+                        if (dr.HasRows)
+                        {
+                            while (dr.Read())
+                            {
+                                email = Convert.ToString(dr["Email"] == DBNull.Value ? default : dr["Email"]);
+                                newPassword = Convert.ToString(dr["Password"] == DBNull.Value ? default : dr["Password"]);
+                            }
+                            return true;
+                        }
+                        return true;
+                    }
+                return false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
         public string GenerateSecurityToken(string email)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(this.iConfiguration[("JWT:Key")]);
-            var tokenDescriptor = new SecurityTokenDescriptor
+            try
             {
-                Subject = new ClaimsIdentity(new[]
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(this.iConfiguration[("JWT:Key")]);
+                var tokenDescriptor = new SecurityTokenDescriptor
                 {
+                    Subject = new ClaimsIdentity(new[]
+                    {
                     new Claim(ClaimTypes.Email, email),
                     //new Claim("UserId",UserId.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(30),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+                    Expires = DateTime.UtcNow.AddMinutes(30),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                return tokenHandler.WriteToken(token);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            
         }
     }
 }

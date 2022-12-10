@@ -38,6 +38,42 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
+        public bool DeleteBook(long bookId)
+        {
+            try
+            {
+                return this.ibookRL.DeleteBook(bookId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public List<BookModel> GetAllBooks()
+        {
+            try
+            {
+                return this.ibookRL.GetAllBooks();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public object GetBookById(long bookId)
+        {
+            try
+            {
+                return this.ibookRL.GetBookById(bookId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
 
     }
 }

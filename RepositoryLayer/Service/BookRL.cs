@@ -81,5 +81,103 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
+        public bool DeleteBook(long bookId)
+        {
+            using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:Bookstore"]))
+
+             try
+             {
+                 SqlCommand cmd = new SqlCommand("spDeleteBook", con);
+                 cmd.CommandType = CommandType.StoredProcedure;
+                 cmd.Parameters.AddWithValue("@BookId", bookId);
+             
+                 con.Open();
+                 int result = cmd.ExecuteNonQuery();
+                 con.Close();
+                 if (result >= 1)
+                 {
+                     return true;
+                 }
+                 return false;
+             }
+             catch (Exception ex)
+             {
+                 throw ex;
+             }
+        }
+        public List<BookModel> GetAllBooks()
+        {
+            using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:Bookstore"]))
+             try
+             {
+                 List<BookModel> addBook = new List<BookModel>();
+
+                 SqlCommand com = new SqlCommand("spGetAllBooks", con);
+                 com.CommandType = CommandType.StoredProcedure;
+                 SqlDataAdapter dataAdapter = new SqlDataAdapter(com);
+                 DataTable dt = new DataTable();
+                 con.Open();
+                 dataAdapter.Fill(dt);
+                 foreach (DataRow dr in dt.Rows)
+                 {
+
+                     addBook.Add(
+                       new BookModel
+                       {
+                           BookId = Convert.ToInt32(dr["BookId"]),
+                           BookName = dr["BookName"].ToString(),
+                           AuthorName = dr["AuthorName"].ToString(),
+                           Rating = Convert.ToInt32(dr["Rating"]),
+                           TotalRating = Convert.ToInt32(dr["TotalRating"]),
+                           DiscountPrice = Convert.ToInt32(dr["DiscountPrice"]),
+                           OriginalPrice = Convert.ToInt32(dr["OriginalPrice"]),
+                           Description = dr["Description"].ToString(),
+                           BookImage = dr["BookImage"].ToString()
+                       });
+                 }
+                 return addBook;
+             }
+             catch (Exception)
+             {
+
+                 throw;
+             }
+
+        }
+        public object GetBookById(long bookId)
+        {
+            using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:Bookstore"]))
+                try
+                {
+                    SqlCommand cmd = new SqlCommand("spGetBookByBookId", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@BookId", bookId);
+                    con.Open();
+                    BookModel bookModel = new BookModel();
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            bookModel.BookId = Convert.ToInt32(dr["BookId"]);
+                            bookModel.BookName = dr["BookName"].ToString();
+                            bookModel.AuthorName = dr["AuthorName"].ToString();
+                            bookModel.Rating = Convert.ToInt32(dr["Rating"]);
+                            bookModel.TotalRating = Convert.ToInt32(dr["TotalRating"]);
+                            bookModel.DiscountPrice = Convert.ToInt32(dr["DiscountPrice"]);
+                            bookModel.OriginalPrice = Convert.ToInt32(dr["OriginalPrice"]);
+                            bookModel.Description = dr["Description"].ToString();
+                            bookModel.BookImage = dr["BookImage"].ToString();
+                        }
+                        return bookModel;
+                    }
+                    return null;
+                }
+                catch(Exception ex)
+                {
+                    throw ex;
+                }
+        }
+
     }
 }

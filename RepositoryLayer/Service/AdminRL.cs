@@ -52,7 +52,7 @@ namespace RepositoryLayer.Service
                     throw ex;
                 }
         }
-        public string AdminLogin(AdminModel adminModel)
+        public string AdminLogin(AdminLoginModel adminLogin)
         {
 
             using SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:BookStore"]);
@@ -61,8 +61,8 @@ namespace RepositoryLayer.Service
                 SqlCommand cmd = new SqlCommand("spAdminLogin", con);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("@Email", adminModel.Email);
-                cmd.Parameters.AddWithValue("@Password", adminModel.Password);
+                cmd.Parameters.AddWithValue("@Email", adminLogin.Email);
+                cmd.Parameters.AddWithValue("@Password", adminLogin.Password);
 
                 con.Open();
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -73,10 +73,10 @@ namespace RepositoryLayer.Service
                     {
                         //adminModel.AdminId = Convert.ToString(dr["AdminId"] == DBNull.Value ? default : dr["AdminId"]);
                         //adminModel.FullName = Convert.ToString(dr["FullName"] == DBNull.Value ? default : dr["FullName"]);
-                        adminModel.Email = Convert.ToString(dr["Email"] == DBNull.Value ? default : dr["Email"]);
-                        adminModel.Password = Convert.ToString(dr["Password"] == DBNull.Value ? default : dr["Password"]);
+                        adminLogin.Email = Convert.ToString(dr["Email"] == DBNull.Value ? default : dr["Email"]);
+                        adminLogin.Password = Convert.ToString(dr["Password"] == DBNull.Value ? default : dr["Password"]);
                         //adminModel.Mobile = Convert.ToString(dr["Mobile"] == DBNull.Value ? default : dr["Mobile"]);
-                        var token = GenerateSecurityToken(adminModel.Email);
+                        var token = GenerateSecurityToken(adminLogin.Email);
                         return token;
                     }
                 }

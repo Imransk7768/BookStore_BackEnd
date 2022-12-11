@@ -26,11 +26,11 @@ namespace BusinessLayer.Service
                 throw ex;
             }
         }
-        public string AdminLogin(AdminModel adminModel)
+        public string AdminLogin(AdminLoginModel adminLogin)
         {
             try
             {
-                return this.iadminRL.AdminLogin(adminModel);
+                return this.iadminRL.AdminLogin(adminLogin);
             }
             catch (Exception ex)
             {

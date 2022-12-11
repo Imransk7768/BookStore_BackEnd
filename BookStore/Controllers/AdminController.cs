@@ -41,12 +41,12 @@ namespace BookStore.Controllers
         }
 
         [HttpPost]
-        [Route("Admin")]
-        public IActionResult AdminLogin(AdminModel adminModel)
+        [Route("AdminLogin")]
+        public IActionResult AdminLogin(AdminLoginModel adminLogin)
         {
             try
             {
-                var result = iadminBL.AdminLogin(adminModel);
+                var result = iadminBL.AdminLogin(adminLogin);
                 if (result != null)
                 {
                     return this.Ok(new { Status = true, Message = "Admin Login Success", Data = result });

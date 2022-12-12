@@ -82,9 +82,9 @@ namespace BookStore.Controllers
                     return this.BadRequest(new { Success = false, Message = "Email not registered" });
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
         [Authorize]
@@ -105,9 +105,9 @@ namespace BookStore.Controllers
                     return BadRequest(new { success = false, message = "Reset denied." });
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
     }

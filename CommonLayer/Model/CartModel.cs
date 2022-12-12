@@ -8,7 +8,15 @@ namespace CommonLayer.Model
     {
         public int CartId { get; set; }
         public int UserId { get; set; }
-        //public int BookId { get; set; }
+        public int BookId { get; set; }
+        public int Quantity { get; set; }
+        //public BookModel bookmodel { get; set; }
+    }
+    public class ViewCartModel
+    {
+        public int CartId { get; set; }
+        public int UserId { get; set; }
+        public int BookId { get; set; }
         public int Quantity { get; set; }
         public BookModel bookmodel { get; set; }
     }

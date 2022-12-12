@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -8,6 +9,8 @@ namespace BookStore.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class BookController : ControllerBase
     {
         IBookBL ibookBL;
@@ -35,7 +38,7 @@ namespace BookStore.Controllers
             }
             catch (Exception ex)
             {
-                return this.BadRequest(new { Success = false, message = ex.Message });
+                throw ex;
             }
         }
         [HttpPut]
@@ -57,7 +60,7 @@ namespace BookStore.Controllers
             }
             catch (Exception ex)
             {
-                return this.BadRequest(new { Success = false, message = ex.Message });
+                throw ex;
             }
         }
         [HttpDelete]
@@ -79,7 +82,7 @@ namespace BookStore.Controllers
             }
             catch (Exception ex)
             {
-                return this.BadRequest(new { Success = false, message = ex.Message });
+                throw ex;
             }
         }
         [HttpGet]
@@ -101,11 +104,11 @@ namespace BookStore.Controllers
             }
             catch (Exception ex)
             {
-                return this.BadRequest(new { Success = false, message = ex.Message });
+                throw ex;
             }
         }
         [HttpGet]
-        [Route("RetriveBook")]
+        [Route("RetriveBookById")]
         public IActionResult GetAllbookById(long bookId)
         {
             try
@@ -123,7 +126,7 @@ namespace BookStore.Controllers
             }
             catch (Exception ex)
             {
-                return this.BadRequest(new { Success = false, message = ex.Message });
+                throw ex;
             }
         }
     }

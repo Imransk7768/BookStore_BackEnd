@@ -19,6 +19,7 @@ namespace CommonLayer.Model
         //[Key]
         //public string AdminId { get; set; }
         //public string FullName { get; set; }
+        public long UserId { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         //public string Mobile { get; set; }

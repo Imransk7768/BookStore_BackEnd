@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 
 namespace BookStore.Controllers
 {
@@ -21,20 +22,21 @@ namespace BookStore.Controllers
 
         [HttpPost]
         [Route("AddWishList")]
-        public IActionResult AddWishList(WishListModel wishlistModel, int userId)
+        public IActionResult AddWishList(int bookId)
         {
             try
             {
-                var result = this.iwishListBL.AddWishList(wishlistModel, userId);
-                if (result.Equals("Book Wishlisted successfully"))
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+                var result = this.iwishListBL.AddWishList(bookId, userId);
+                if (result != null)
                 {
 
-                    return this.Ok(new { Success = true, message = "Book removed from wishlist", Response = result });
+                    return this.Ok(new { Success = true, message = "Book Added to Wishlist", Response = result });
 
                 }
                 else
                 {
-                    return this.BadRequest(new { Success = true, message = "Book removed from wishlist", Response = result });
+                    return this.BadRequest(new { Success = true, message = "Book not added to wishlist", Response = result });
 
                 }
             }
@@ -45,10 +47,12 @@ namespace BookStore.Controllers
         }
         [HttpDelete]
         [Route("DeleteWishList")]
-        public IActionResult DeleteWishList(int wishlistid, int userId)
+        public IActionResult DeleteWishList(int wishlistid)
         {
             try
             {
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+
                 var result = this.iwishListBL.DeleteWishList(wishlistid, userId);
                 if (result != null)
                 {
@@ -67,11 +71,13 @@ namespace BookStore.Controllers
         [HttpGet]
         [Route("RetrieveWishList")]
 
-        public IActionResult GetWishlist(int userid)
+        public IActionResult GetWishlist()
         {
             try
             {
-                var result = this.iwishListBL.GetWishlistDetailsByUserid(userid);
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+
+                var result = this.iwishListBL.GetWishlistDetailsByUserid(userId);
                 if (result != null)
                 {
                     return this.Ok(new { Success = true, message = "Wishlist Retrieve Success", Response = result });

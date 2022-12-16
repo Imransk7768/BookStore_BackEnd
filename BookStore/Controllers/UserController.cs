@@ -46,11 +46,11 @@ namespace BookStore.Controllers
         //for login
         [HttpPost]
         [Route("Login")]
-        public IActionResult LoginUser(string email, string password)
+        public IActionResult LoginUser(UserLogin userLogin)
         {
             try
             {
-                var result = iuserBL.Login(email, password);
+                var result = iuserBL.Login(userLogin);
                 if (result != null)
                 {
                     return Ok(new { success = true, message = "Login succesful", data = result });

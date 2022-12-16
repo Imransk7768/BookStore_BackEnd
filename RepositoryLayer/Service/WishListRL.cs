@@ -16,22 +16,23 @@ namespace RepositoryLayer.Service
         {
             this.iConfiguration = iconfiguration;
         }
-        public WishListModel AddWishList(WishListModel wishlistModel, int userId)
+        public WishListModel AddWishList(int bookId, long userId)
         {
+            WishListModel wishListModel = new WishListModel();
             using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:Bookstore"]))
 
                 try
                 {
                     SqlCommand cmd = new SqlCommand("spAddWishList", con);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@BookId", wishlistModel.BookId);
+                    cmd.Parameters.AddWithValue("@BookId", bookId);
                     cmd.Parameters.AddWithValue("@UserId", userId);
                     con.Open();
                     int result = cmd.ExecuteNonQuery();
                     con.Close();
                     if (result != 0)
                     {
-                        return wishlistModel;
+                        return wishListModel;
                     }
                     else
                     {
@@ -43,7 +44,7 @@ namespace RepositoryLayer.Service
                     throw ex;
                 }
         }
-        public bool DeleteWishList(int WishlistId, int userId)
+        public bool DeleteWishList(int WishlistId, long userId)
         {
             using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:Bookstore"]))
                 try
@@ -70,7 +71,7 @@ namespace RepositoryLayer.Service
                     throw;
                 }
         }
-        public List<ViewWishListModel> GetWishlistDetailsByUserid(int userId)
+        public List<ViewWishListModel> GetWishlistDetailsByUserid(long userId)
         {
             using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:Bookstore"]))
 

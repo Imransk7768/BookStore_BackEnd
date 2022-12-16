@@ -14,18 +14,18 @@ namespace BusinessLayer.Service
         {
             this.iwishListRL = iwishListRL;
         }
-        public WishListModel AddWishList(WishListModel wishlistModel, int userId)
+        public WishListModel AddWishList(int bookId, long userId)
         {
             try
             {
-                return iwishListRL.AddWishList(wishlistModel, userId);  
+                return iwishListRL.AddWishList(bookId, userId);  
             }
             catch(Exception ex)
             {
                 throw ex;
             }
         }
-        public bool DeleteWishList(int WishlistId, int userId)
+        public bool DeleteWishList(int WishlistId, long userId)
         {
 
             try
@@ -37,7 +37,7 @@ namespace BusinessLayer.Service
                 throw ex;
             }
         }
-        public List<ViewWishListModel> GetWishlistDetailsByUserid(int userId)
+        public List<ViewWishListModel> GetWishlistDetailsByUserid(long userId)
         {
 
             try

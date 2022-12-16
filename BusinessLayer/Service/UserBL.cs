@@ -25,11 +25,12 @@ namespace BusinessLayer.Service
                 throw ex;
             }
         }
-        public string Login(string email, string password)
+        public string Login(UserLogin userLogin)
+
         {
             try
             {
-                return iuserRL.Login(email,password);
+                return iuserRL.Login(userLogin);
             }
             catch (Exception ex)
             {

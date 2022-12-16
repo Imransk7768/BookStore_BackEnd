@@ -19,6 +19,8 @@ namespace BookStore.Controllers
             this.ibookBL = ibookBL;
 
         }
+
+        [Authorize(Roles = Role.Admin)]
         [HttpPost]
         [Route("AddBook")]
         public IActionResult AddBook(BookModel bookModel)

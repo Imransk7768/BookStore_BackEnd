@@ -7,6 +7,7 @@ namespace CommonLayer.Model
     public class WishListModel
     {
         public int BookId { get; set; }
+
        
     }
     public class ViewWishListModel

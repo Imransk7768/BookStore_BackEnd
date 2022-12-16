@@ -15,6 +15,8 @@ namespace RepositoryLayer.Service
     public class UserRL : IUserRL
     {
         private SqlConnection con;
+
+        public static string Key = "Imran*84";
         private readonly IConfiguration iConfiguration;
         public UserRL(IConfiguration _configuration)
         {
@@ -33,7 +35,7 @@ namespace RepositoryLayer.Service
                     cmd.Parameters.AddWithValue("@FullName", userReg.FullName);
                     cmd.Parameters.AddWithValue("@Email", userReg.Email);
                     cmd.Parameters.AddWithValue("@Mobile", userReg.Mobile);
-                    cmd.Parameters.AddWithValue("@Password", userReg.Password);
+                    cmd.Parameters.AddWithValue("@Password", Encrypt(userReg.Password));
 
                     con.Open();
                     int result = cmd.ExecuteNonQuery();
@@ -50,7 +52,7 @@ namespace RepositoryLayer.Service
                     throw;
                 }
         }
-        public string Login(string email, string password)
+        public string Login(UserLogin userLogin)
         {
             using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:BookStore"]))
                 try
@@ -58,30 +60,32 @@ namespace RepositoryLayer.Service
 
                     SqlCommand cmd = new SqlCommand("spLogin", con);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Email", email);
-                    cmd.Parameters.AddWithValue("@Password", password);
+                    cmd.Parameters.AddWithValue("@Email", userLogin.Email);
+                    cmd.Parameters.AddWithValue("@Password", Decrypt(userLogin.Password));
                     con.Open();
-                    var resultcnt = (Int32)cmd.ExecuteScalar();
-                    //if (resultcnt == 1)
-                    //return userLogin;
-                    SqlDataReader dr = cmd.ExecuteReader();
-                    if (dr.HasRows)
+                   
+                    var result = cmd.ExecuteScalar();
+
+                    if (result != null)
                     {
-                        while (dr.Read())
-                        {
-                            email = Convert.ToString(dr["Email"] == DBNull.Value ? default : dr["Email"]);
-                        }
-                        var token = this.GenerateSecurityToken(email);
-                        new MSMQ().sendData2Queue(token);
+                        string query = "SELECT UserId FROM Users WHERE EmaiL = '" + userLogin.Email + "'";
+                        SqlCommand com = new SqlCommand(query, con);
+                        var Id = com.ExecuteScalar();
+                        var token = GenerateSecurityToken(userLogin.Email, Id.ToString());
                         return token;
                     }
                     else
-                        con.Close();
-                    return null;
+                    {
+                        return null;
+                    }
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
-                    throw ex;
+                    throw new Exception(e.Message);
+                }
+                finally
+                {
+                    con.Close();
                 }
         }
 
@@ -95,22 +99,28 @@ namespace RepositoryLayer.Service
                     cmd.Parameters.AddWithValue("@Email", Email);
                     con.Open();
                     SqlDataReader dr = cmd.ExecuteReader();
-                    if (dr.HasRows)
+                    var result = cmd.ExecuteScalar();
+
+                    if (result != null)
                     {
-                        while (dr.Read())
-                        {
-                            Email = Convert.ToString(dr["Email"] == DBNull.Value ? default : dr["Email"]);
-                        }
-                        var token = this.GenerateSecurityToken(Email);
-                        new MSMQ().sendData2Queue(token);
+                        string query = "SELECT UserId FROM Users WHERE EmaiL = '" + result + "'";
+                        SqlCommand com = new SqlCommand(query, con);
+                        var Id = com.ExecuteScalar();
+                        var token = GenerateSecurityToken(Email, Id.ToString());
                         return token;
                     }
-                    con.Close();
-                    return null;
+                    else
+                    {
+                        return null;
+                    }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    throw;
+                    throw new Exception(e.Message);
+                }
+                finally
+                {
+                    con.Close();
                 }
         }
         public bool ResetPassword(string email, string newPassword, string confirmPassword)
@@ -122,8 +132,10 @@ namespace RepositoryLayer.Service
                     {
                         SqlCommand cmd = new SqlCommand("spResetPassword", con);
                         cmd.CommandType = CommandType.StoredProcedure;
+                        //var newPassword = Encrypt(confirmPassword);
                         cmd.Parameters.AddWithValue("@Email", email);
-                        cmd.Parameters.AddWithValue("@Password", newPassword);
+                        cmd.Parameters.AddWithValue("@Password", Encrypt(newPassword));
+                        //cmd.Parameters.AddWithValue("@Password", Encrypt(confirmPassword));
                         con.Open();
                         SqlDataReader dr = cmd.ExecuteReader();
                         if (dr.HasRows)
@@ -144,7 +156,7 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
-        public string GenerateSecurityToken(string email)
+        public string GenerateSecurityToken(string email, string UserId)
         {
             try
             {
@@ -155,7 +167,7 @@ namespace RepositoryLayer.Service
                     Subject = new ClaimsIdentity(new[]
                     {
                     new Claim(ClaimTypes.Email, email),
-                    //new Claim("UserId",UserId.ToString())
+                    new Claim("UserId",UserId.ToString())
                 }),
                     Expires = DateTime.UtcNow.AddMinutes(30),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -168,6 +180,48 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
             
+        }
+        public static string Encrypt(string password)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(password))
+                {
+                    return "";
+                }
+                else
+                {
+                    password += Key;
+                    var passwordBytes = Encoding.UTF8.GetBytes(password);
+                    return Convert.ToBase64String(passwordBytes);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public static string Decrypt(string base64EncodeData)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(base64EncodeData))
+                {
+                    return "";
+                }
+                else
+                {
+                    var base64EncodeBytes = Convert.FromBase64String(base64EncodeData);
+                    var result = Encoding.UTF8.GetString(base64EncodeBytes);
+                    result = result.Substring(0, result.Length - Key.Length);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

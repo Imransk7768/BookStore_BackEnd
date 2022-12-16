@@ -35,7 +35,8 @@ namespace RepositoryLayer.Service
                     cmd.Parameters.AddWithValue("@FullName", userReg.FullName);
                     cmd.Parameters.AddWithValue("@Email", userReg.Email);
                     cmd.Parameters.AddWithValue("@Mobile", userReg.Mobile);
-                    cmd.Parameters.AddWithValue("@Password", Encrypt(userReg.Password));
+                    cmd.Parameters.AddWithValue("@Password", userReg.Password);
+                    //cmd.Parameters.AddWithValue("@Password", Encrypt(userReg.Password));
 
                     con.Open();
                     int result = cmd.ExecuteNonQuery();
@@ -61,7 +62,7 @@ namespace RepositoryLayer.Service
                     SqlCommand cmd = new SqlCommand("spLogin", con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Email", userLogin.Email);
-                    cmd.Parameters.AddWithValue("@Password", Decrypt(userLogin.Password));
+                    cmd.Parameters.AddWithValue("@Password", userLogin.Password);
                     con.Open();
                    
                     var result = cmd.ExecuteScalar();
@@ -99,20 +100,19 @@ namespace RepositoryLayer.Service
                     cmd.Parameters.AddWithValue("@Email", Email);
                     con.Open();
                     SqlDataReader dr = cmd.ExecuteReader();
-                    var result = cmd.ExecuteScalar();
-
-                    if (result != null)
+                    if (dr.HasRows)
                     {
-                        string query = "SELECT UserId FROM Users WHERE EmaiL = '" + result + "'";
-                        SqlCommand com = new SqlCommand(query, con);
-                        var Id = com.ExecuteScalar();
-                        var token = GenerateSecurityToken(Email, Id.ToString());
-                        return token;
+                        while (dr.Read())
+                        {
+                            var userId = Convert.ToInt32(dr["UserId"] == DBNull.Value ? default : dr["UserId"]);
+                            var token = this.GenerateSecurityToken(Email, userId.ToString());
+                            MSMQ msmq = new MSMQ();
+                            msmq.sendData2Queue(token);
+                            return token;
+                        }
                     }
-                    else
-                    {
-                        return null;
-                    }
+                    con.Close();
+                    return null;
                 }
                 catch (Exception e)
                 {
@@ -134,7 +134,8 @@ namespace RepositoryLayer.Service
                         cmd.CommandType = CommandType.StoredProcedure;
                         //var newPassword = Encrypt(confirmPassword);
                         cmd.Parameters.AddWithValue("@Email", email);
-                        cmd.Parameters.AddWithValue("@Password", Encrypt(newPassword));
+                        cmd.Parameters.AddWithValue("@Password", newPassword);
+                        //cmd.Parameters.AddWithValue("@Password", Encrypt(newPassword));
                         //cmd.Parameters.AddWithValue("@Password", Encrypt(confirmPassword));
                         con.Open();
                         SqlDataReader dr = cmd.ExecuteReader();
@@ -183,45 +184,21 @@ namespace RepositoryLayer.Service
         }
         public static string Encrypt(string password)
         {
-            try
-            {
-                if (string.IsNullOrEmpty(password))
-                {
-                    return "";
-                }
-                else
-                {
-                    password += Key;
-                    var passwordBytes = Encoding.UTF8.GetBytes(password);
-                    return Convert.ToBase64String(passwordBytes);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            if (string.IsNullOrEmpty(password))
+                return "";
+            password += Key;
+            var bytes = Encoding.UTF8.GetBytes(password);
+            return Convert.ToBase64String(bytes);
         }
 
-        public static string Decrypt(string base64EncodeData)
+        public static string Decrypt(string password)
         {
-            try
-            {
-                if (string.IsNullOrEmpty(base64EncodeData))
-                {
-                    return "";
-                }
-                else
-                {
-                    var base64EncodeBytes = Convert.FromBase64String(base64EncodeData);
-                    var result = Encoding.UTF8.GetString(base64EncodeBytes);
-                    result = result.Substring(0, result.Length - Key.Length);
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            if (string.IsNullOrEmpty(password))
+                return "";
+            var bytes = Convert.FromBase64String(password);
+            var result = Encoding.UTF8.GetString(bytes);
+            result = result.Substring(0, result.Length - Key.Length);
+            return result;
         }
     }
 }

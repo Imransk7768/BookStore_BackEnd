@@ -37,7 +37,11 @@ namespace BusinessLayer.Service
                 throw ex;
             }
         }
+<<<<<<< HEAD
+        public List<ViewWishListModel> GetWishlistDetailsByUserid(int userId)
+=======
         public List<ViewWishListModel> GetWishlistDetailsByUserid(long userId)
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
         {
 
             try

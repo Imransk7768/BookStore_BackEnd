@@ -26,7 +26,11 @@ namespace BookStore.Controllers
         {
             try
             {
+<<<<<<< HEAD
+                int userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+=======
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
 
                 var result = this.iorderBL.AddOrder(orderModel, userId);
                 if (result != null)
@@ -68,5 +72,30 @@ namespace BookStore.Controllers
                 throw ex;
             }
         }
+<<<<<<< HEAD
+        [HttpDelete]
+        [Route("DeleteOrder")]
+        public IActionResult DeleteOrder(int orderId)
+        {
+            try
+            {
+                int userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
+                var result = this.iorderBL.DeleteOrder(orderId);
+                if (result == true)
+                {
+                    return this.Ok(new { Status = true, Message = "Order Deleted" });
+                }
+                else
+                {
+                    return this.BadRequest(new { Status = false, Message = "Failed to Delete Order" });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+=======
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
     }
 }

@@ -4,12 +4,20 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+<<<<<<< HEAD
+using System.Linq;
+=======
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
 
 namespace BookStore.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+<<<<<<< HEAD
+    //[Authorize]
+=======
     [Authorize]
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
 
     public class CartController : ControllerBase
     {
@@ -19,6 +27,29 @@ namespace BookStore.Controllers
             this.icartBL = icartBL;
         }
 
+<<<<<<< HEAD
+        [Authorize]
+        [HttpPost]
+        [Route("AddCart")]
+        //public IActionResult AddCart(int bookId,CartModel cartModel)
+        //public IActionResult AddCart(AddCartModel cart)
+        public IActionResult AddCart(int bookId)
+
+        {
+            try
+            {
+                int userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+                var result = icartBL.AddCart(bookId, userId);
+                //var result = icartBL.AddCart(bookId, userId, cartModel);
+                //var result = icartBL.AddCart(cart);
+                if (result != null)
+                {
+                    return this.Ok(new { success = true, message = "Cart Created Succesful", data = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Cart Created Failed." });
+=======
         [HttpPost]
         [Route("AddCart")]
         //for registration
@@ -34,6 +65,7 @@ namespace BookStore.Controllers
                 else
                 {
                     return BadRequest(new { success = false, message = "Cart Created Failed." });
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
                 }
             }
             catch (Exception ex)
@@ -48,6 +80,10 @@ namespace BookStore.Controllers
         {
             try
             {
+<<<<<<< HEAD
+                int userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
+=======
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
                 var result = this.icartBL.UpdateCart(cartid, cart);
                 if (result != null)
 
@@ -71,6 +107,10 @@ namespace BookStore.Controllers
         {
             try
             {
+<<<<<<< HEAD
+                //int userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
+=======
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
                 var result = this.icartBL.DeleteCart(cartid);
                 if (result != null)
 
@@ -88,12 +128,23 @@ namespace BookStore.Controllers
             }
         }
 
+<<<<<<< HEAD
+        //[Authorize]
+        [HttpGet]
+        [Route("GetAllCart")]
+        public IActionResult GetCartDetails()
+        {
+            try
+            {
+                int userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
+=======
         [HttpGet]
         [Route("GetAllCart")]
         public IActionResult GetCartDetails(int userId)
         {
             try
             {
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
                 var result = this.icartBL.GetCartByUserid(userId);
                 if (result != null)
 

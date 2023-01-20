@@ -14,7 +14,12 @@ namespace BusinessLayer.Service
         {
             this.iorderRL = iorderRL;
         }
+<<<<<<< HEAD
+        public string AddOrder(OrderModel orderModel, int userId)
+
+=======
         public OrderModel AddOrder(OrderModel orderModel, long userId)
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
         {
             try
             {
@@ -36,5 +41,21 @@ namespace BusinessLayer.Service
                 throw ex;
             }
         }
+<<<<<<< HEAD
+        public bool DeleteOrder(int orderId)
+        {
+            try
+            {
+                return this.iorderRL.DeleteOrder(orderId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+       
+
+=======
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
     }
 }

@@ -112,6 +112,87 @@ namespace RepositoryLayer.Service
                     throw ex;
                 }
         }
+<<<<<<< HEAD
+
+        public List<AddressModel> GetAllAddresses(int userId)
+        {
+            using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:Bookstore"]))
+                try
+            {
+                List<AddressModel> addressList = new List<AddressModel>();
+
+                con.Open();
+                String query = "SELECT AddressId, Address, City, State, TypeId FROM Address WHERE UserId = '" + userId + "'";
+                SqlCommand cmd = new SqlCommand(query, con);
+                SqlDataReader rdr = cmd.ExecuteReader();
+
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+                        AddressModel address = new AddressModel();
+                        address.AddressId = Convert.ToInt32(rdr["AddressId"] == DBNull.Value ? default : rdr["AddressId"]);
+                        address.Address = Convert.ToString(rdr["Address"] == DBNull.Value ? default : rdr["Address"]);
+                        address.City = Convert.ToString(rdr["City"] == DBNull.Value ? default : rdr["City"]);
+                        address.State = Convert.ToString(rdr["State"] == DBNull.Value ? default : rdr["State"]);
+                        address.TypeId = Convert.ToInt32(rdr["TypeId"] == DBNull.Value ? default : rdr["TypeId"]);
+                        addressList.Add(address);
+                    }
+                    return addressList;
+                }
+                else
+                {
+                    con.Close();
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        //public List<AddressModel> GetAllAddresses(int userId)
+        //{
+        //    using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:Bookstore"]))
+
+        //        try
+        //        {
+        //            using (con)
+        //            {
+        //                SqlCommand cmd = new SqlCommand("spGetAllAddresses", con);
+        //                cmd.CommandType = CommandType.StoredProcedure;
+        //                cmd.Parameters.AddWithValue("@UserId", userId);
+        //                con.Open();
+        //                SqlDataReader dr = cmd.ExecuteReader();
+        //                if (dr.HasRows)
+        //                {
+        //                    List<AddressModel> addressModel = new List<AddressModel>();
+        //                    while (dr.Read())
+        //                    {
+        //                        addressModel.Add(new AddressModel
+        //                        {
+        //                            Address = dr["Address"].ToString(),
+        //                            City = dr["City"].ToString(),
+        //                            State = dr["State"].ToString(),
+        //                            TypeId = Convert.ToInt32(dr["TypeId"]),
+        //                            UserId = Convert.ToInt32(dr["UserId"])
+        //                        });
+        //                    }
+        //                    con.Close();
+        //                    return addressModel;
+        //                }
+        //                else
+        //                {
+        //                    return null;
+        //                }
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            throw ex;
+        //        }
+        //}
+=======
         public List<AddressModel> GetAllAddresses(int userId)
         {
             using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:Bookstore"]))
@@ -153,6 +234,7 @@ namespace RepositoryLayer.Service
                     throw ex;
                 }
         }
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
 
     }
 }

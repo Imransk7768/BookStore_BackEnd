@@ -16,12 +16,20 @@ namespace RepositoryLayer.Service
         {
             this.iConfiguration = iconfiguration;
         }
+<<<<<<< HEAD
+        public string AddOrder(OrderModel orderModel, int userId)
+=======
         public OrderModel AddOrder(OrderModel orderModel, long userId)
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
         {
             using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:Bookstore"]))
                 try
                 {
+<<<<<<< HEAD
+                SqlCommand cmd = new SqlCommand("spAddOrders", con);
+=======
                 SqlCommand cmd = new SqlCommand("AddOrders", con);
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("@BookQuantity", orderModel.BookQuantity);
@@ -33,9 +41,15 @@ namespace RepositoryLayer.Service
                 var result = Convert.ToInt32(cmd.ExecuteScalar());
                 con.Close();
 
+<<<<<<< HEAD
+                if (result != 0)
+                {
+                    return "Order Placed";
+=======
                 if (result != 2 && result != 3)
                 {
                     return orderModel;
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
                 }
                 else
                 {
@@ -82,5 +96,36 @@ namespace RepositoryLayer.Service
                 return null;
             }
         }
+<<<<<<< HEAD
+        public bool DeleteOrder(int orderId)
+        {
+            using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:Bookstore"]))
+                try
+                {
+                SqlCommand cmd = new SqlCommand("spDeleteOrder", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@OrderId", orderId);
+
+                con.Open();
+                var result = cmd.ExecuteNonQuery();
+                con.Close();
+
+                if (result != 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+=======
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
     }
 }

@@ -37,6 +37,21 @@ namespace BusinessLayer.Service
                 throw ex;
             }
         }
+<<<<<<< HEAD
+        //public string UserLogin(LoginResponse userLog)
+
+        //{
+        //    try
+        //    {
+        //        return iuserRL.UserLogin(userLog);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+=======
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
         public string ForgetPassword(string Email)
         {
             try
@@ -59,6 +74,20 @@ namespace BusinessLayer.Service
                 throw ex;
             }
         }
+<<<<<<< HEAD
+        public List<GetUserModel> GetUserdetails(int userId)
+        {
+            try
+            {
+                return iuserRL.GetUserdetails(userId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+=======
 
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
     }
 }

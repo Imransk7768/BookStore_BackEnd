@@ -34,7 +34,11 @@ namespace RepositoryLayer.Service
                     cmd.Parameters.AddWithValue("@OriginalPrice", bookModel.OriginalPrice);
                     cmd.Parameters.AddWithValue("@Description", bookModel.Description);
                     cmd.Parameters.AddWithValue("@BookImage", bookModel.BookImage);
+<<<<<<< HEAD
+                    cmd.Parameters.AddWithValue("@BookCount", bookModel.BookQuantity);
+=======
                     cmd.Parameters.AddWithValue("@BookCount", bookModel.BookCount);
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
 
                     con.Open();
                     cmd.ExecuteNonQuery();
@@ -64,7 +68,11 @@ namespace RepositoryLayer.Service
                     cmd.Parameters.AddWithValue("@OriginalPrice", bookModel.OriginalPrice);
                     cmd.Parameters.AddWithValue("@Description", bookModel.Description);
                     cmd.Parameters.AddWithValue("@BookImage", bookModel.BookImage);
+<<<<<<< HEAD
+                    cmd.Parameters.AddWithValue("@BookCount", bookModel.BookQuantity);
+=======
                     cmd.Parameters.AddWithValue("@BookCount", bookModel.BookCount);
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
 
                     con.Open();
                     int result = cmd.ExecuteNonQuery();
@@ -105,6 +113,10 @@ namespace RepositoryLayer.Service
                  throw ex;
              }
         }
+<<<<<<< HEAD
+        
+
+=======
         public List<BookModel> GetAllBooks()
         {
             using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:Bookstore"]))
@@ -144,6 +156,7 @@ namespace RepositoryLayer.Service
              }
 
         }
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
         public object GetBookById(long bookId)
         {
             using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:Bookstore"]))
@@ -168,6 +181,12 @@ namespace RepositoryLayer.Service
                             bookModel.OriginalPrice = Convert.ToInt32(dr["OriginalPrice"]);
                             bookModel.Description = dr["Description"].ToString();
                             bookModel.BookImage = dr["BookImage"].ToString();
+<<<<<<< HEAD
+                            bookModel.BookImage = "../../../assets/" + bookModel.BookImage;
+                            bookModel.BookQuantity = Convert.ToInt32(dr["BookCount"]);
+
+=======
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
                         }
                         return bookModel;
                     }
@@ -178,6 +197,58 @@ namespace RepositoryLayer.Service
                     throw ex;
                 }
         }
+<<<<<<< HEAD
+        public List<BookModel> GetAllBooks()
+        {
+            using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:Bookstore"]))
 
+                try
+                {
+
+                List<BookModel> bookList = new List<BookModel>();
+                {
+
+
+                    SqlCommand cmd = new SqlCommand("spGetAllBooks", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    con.Open();
+                    SqlDataReader rd = cmd.ExecuteReader();
+                    if (rd.HasRows)
+                    {
+                        while (rd.Read())
+                        {
+                            BookModel bookModel = new BookModel();
+
+                            bookModel.BookId = Convert.ToInt32(rd["BookId"] == DBNull.Value ? default : rd["BookId"]);
+                            bookModel.BookName = Convert.ToString(rd["BookName"] == DBNull.Value ? default : rd["BookName"]);
+                            bookModel.AuthorName = Convert.ToString(rd["AuthorName"] == DBNull.Value ? default : rd["AuthorName"]);
+                            bookModel.Rating = Convert.ToDecimal(rd["Rating"] == DBNull.Value ? default : rd["Rating"]);
+                            bookModel.TotalRating = Convert.ToInt32(rd["TotalRating"] == DBNull.Value ? default : rd["TotalRating"]);
+                            bookModel.DiscountPrice = Convert.ToInt32(rd["DiscountPrice"] == DBNull.Value ? default : rd["DiscountPrice"]);
+                            bookModel.OriginalPrice = Convert.ToInt32(rd["OriginalPrice"] == DBNull.Value ? default : rd["OriginalPrice"]);
+                            bookModel.Description = Convert.ToString(rd["Description"] == DBNull.Value ? default : rd["Description"]);
+                            bookModel.BookImage = Convert.ToString(rd["BookImage"] == DBNull.Value ? default : rd["BookImage"]);
+                            //if(bookModel.BookId==11)
+                            //this string added for taking image from assets folder
+                            bookModel.BookImage = "../../../assets/" + bookModel.BookImage;
+                            bookModel.BookQuantity = Convert.ToInt32(rd["BookCount"] == DBNull.Value ? default : rd["BookCount"]);
+
+
+                            bookList.Add(bookModel);
+                        }
+                    }
+                }
+                con.Close();
+                return bookList;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+=======
+
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
     }
 }

@@ -8,9 +8,15 @@ using System.Linq;
 
 namespace BookStore.Controllers
 {
+<<<<<<< HEAD
+    //[Authorize(Roles = Role.Users)]
+    [Route("api/[controller]")]
+    [ApiController]
+=======
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
     public class WishListController : ControllerBase
     {
         private readonly IWishListBL iwishListBL;
@@ -20,6 +26,10 @@ namespace BookStore.Controllers
             this.iwishListBL = iwishListBL;
         }
 
+<<<<<<< HEAD
+        [Authorize]
+=======
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
         [HttpPost]
         [Route("AddWishList")]
         public IActionResult AddWishList(int bookId)
@@ -69,13 +79,21 @@ namespace BookStore.Controllers
             }
         }
         [HttpGet]
+<<<<<<< HEAD
+        [Route("GetWishList")]
+=======
         [Route("RetrieveWishList")]
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
 
         public IActionResult GetWishlist()
         {
             try
             {
+<<<<<<< HEAD
+                int userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
+=======
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
 
                 var result = this.iwishListBL.GetWishlistDetailsByUserid(userId);
                 if (result != null)

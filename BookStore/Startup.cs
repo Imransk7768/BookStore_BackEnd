@@ -125,6 +125,14 @@ namespace BookStore
             app.UseHttpsRedirection();
 
             app.UseRouting();
+<<<<<<< HEAD
+            app.UseCors(x => x
+               .AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader());
+
+=======
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -9,7 +9,11 @@ namespace BookStore.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+<<<<<<< HEAD
+    //[Authorize]
+=======
     [Authorize]
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
 
     public class BookController : ControllerBase
     {
@@ -23,6 +27,10 @@ namespace BookStore.Controllers
         [Authorize(Roles = Role.Admin)]
         [HttpPost]
         [Route("AddBook")]
+<<<<<<< HEAD
+
+=======
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
         public IActionResult AddBook(BookModel bookModel)
         {
             try
@@ -97,7 +105,11 @@ namespace BookStore.Controllers
                 if (reg != null)
 
                 {
+<<<<<<< HEAD
+                    return this.Ok(new { Success = true, message = "All Book Details", data = reg });
+=======
                     return this.Ok(new { Success = true, message = "All Book Details", Response = reg });
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
                 }
                 else
                 {

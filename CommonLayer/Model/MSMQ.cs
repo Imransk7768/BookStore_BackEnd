@@ -32,7 +32,12 @@ namespace CommonLayer.Model
             {
                 var msg = messageQ.EndReceive(e.AsyncResult);
                 string token = msg.Body.ToString();
+<<<<<<< HEAD
+                string subject = "BookStore reset link";
+                //string body = "http://localhost:4200/resetpassword?" + token;
+=======
                 string subject = "FundooNoteApp reset link";
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
                 string body = token;
                 var SMTP = new SmtpClient("smtp.gmail.com")
                 {

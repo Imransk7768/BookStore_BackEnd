@@ -15,17 +15,40 @@ namespace BusinessLayer.Service
         {
             this.icartRL = icartRL;
         }
+<<<<<<< HEAD
+        public CartModel AddCart(int bookId, int userId)
+        {
+            try
+            {
+                return icartRL.AddCart(bookId, userId);
+=======
         public CartModel AddCart(CartModel cartModel)
         {
             try
             {
                 return icartRL.AddCart(cartModel);
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+<<<<<<< HEAD
+        //public CartModel AddCart(int bookId, int userId, CartModel cartModel)
+        //{
+        //    try
+        //    {
+        //        return icartRL.AddCart(bookId, userId, cartModel);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+
+=======
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
         public CartModel UpdateCart(long cartid, CartModel cartModel)
         {
             try
@@ -48,7 +71,11 @@ namespace BusinessLayer.Service
                 throw ex;
             }
         }
+<<<<<<< HEAD
+        public List<CartModel> GetCartByUserid(int userId)
+=======
         public List<ViewCartModel> GetCartByUserid(int userId)
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
 
         {
             try

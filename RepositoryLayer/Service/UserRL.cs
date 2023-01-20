@@ -35,8 +35,13 @@ namespace RepositoryLayer.Service
                     cmd.Parameters.AddWithValue("@FullName", userReg.FullName);
                     cmd.Parameters.AddWithValue("@Email", userReg.Email);
                     cmd.Parameters.AddWithValue("@Mobile", userReg.Mobile);
+<<<<<<< HEAD
+                    //cmd.Parameters.AddWithValue("@Password", userReg.Password);
+                    cmd.Parameters.AddWithValue("@Password", Encrypt(userReg.Password));
+=======
                     cmd.Parameters.AddWithValue("@Password", userReg.Password);
                     //cmd.Parameters.AddWithValue("@Password", Encrypt(userReg.Password));
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
 
                     con.Open();
                     int result = cmd.ExecuteNonQuery();
@@ -58,18 +63,33 @@ namespace RepositoryLayer.Service
             using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:BookStore"]))
                 try
                 {
+<<<<<<< HEAD
+                    SqlCommand cmd = new SqlCommand("spLogin", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@Email", userLogin.Email);
+                    //cmd.Parameters.AddWithValue("@Password", userLogin.Password);
+                    var pwd = Encrypt(userLogin.Password);
+                    cmd.Parameters.AddWithValue("@Password", pwd);
+
+=======
 
                     SqlCommand cmd = new SqlCommand("spLogin", con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Email", userLogin.Email);
                     cmd.Parameters.AddWithValue("@Password", userLogin.Password);
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
                     con.Open();
                    
                     var result = cmd.ExecuteScalar();
 
                     if (result != null)
                     {
+<<<<<<< HEAD
+                        string query = "SELECT UserId FROM Users WHERE Email = '" + userLogin.Email + "'";
+=======
                         string query = "SELECT UserId FROM Users WHERE EmaiL = '" + userLogin.Email + "'";
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
                         SqlCommand com = new SqlCommand(query, con);
                         var Id = com.ExecuteScalar();
                         var token = GenerateSecurityToken(userLogin.Email, Id.ToString());
@@ -134,8 +154,13 @@ namespace RepositoryLayer.Service
                         cmd.CommandType = CommandType.StoredProcedure;
                         //var newPassword = Encrypt(confirmPassword);
                         cmd.Parameters.AddWithValue("@Email", email);
+<<<<<<< HEAD
+                        //cmd.Parameters.AddWithValue("@Password", newPassword);
+                        cmd.Parameters.AddWithValue("@Password", Encrypt(newPassword));
+=======
                         cmd.Parameters.AddWithValue("@Password", newPassword);
                         //cmd.Parameters.AddWithValue("@Password", Encrypt(newPassword));
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
                         //cmd.Parameters.AddWithValue("@Password", Encrypt(confirmPassword));
                         con.Open();
                         SqlDataReader dr = cmd.ExecuteReader();
@@ -167,6 +192,10 @@ namespace RepositoryLayer.Service
                 {
                     Subject = new ClaimsIdentity(new[]
                     {
+<<<<<<< HEAD
+                    new Claim(ClaimTypes.Role, "Users"),
+=======
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
                     new Claim(ClaimTypes.Email, email),
                     new Claim("UserId",UserId.ToString())
                 }),
@@ -184,21 +213,99 @@ namespace RepositoryLayer.Service
         }
         public static string Encrypt(string password)
         {
+<<<<<<< HEAD
+            try
+            {
+                if (string.IsNullOrEmpty(password))
+                    return null;
+                else
+                {
+                    password += Key;
+                    var passwordBytes = Encoding.UTF8.GetBytes(password);
+                    return Convert.ToBase64String(passwordBytes);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+=======
             if (string.IsNullOrEmpty(password))
                 return "";
             password += Key;
             var bytes = Encoding.UTF8.GetBytes(password);
             return Convert.ToBase64String(bytes);
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
         }
 
         public static string Decrypt(string password)
         {
+<<<<<<< HEAD
+            try
+            {
+                if (string.IsNullOrEmpty(password))
+                    return null;
+                else
+                {
+                    var encodedBytes = Convert.FromBase64String(password);
+                    var res = Encoding.UTF8.GetString(encodedBytes);
+                    var resPass = res.Substring(0, res.Length - Key.Length);
+                    return resPass;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public List<GetUserModel> GetUserdetails(int userId)
+        {
+            using (SqlConnection con = new SqlConnection(iConfiguration["ConnectionString:BookStore"]))
+                try
+                {
+
+                List<GetUserModel> userList = new List<GetUserModel>();
+
+                SqlCommand cmd = new SqlCommand("spGetUserData", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@userId", userId);
+
+                con.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        GetUserModel getUser = new GetUserModel();
+
+                        getUser.UserId = Convert.ToInt32(dr["UserId"] == DBNull.Value ? default : dr["UserId"]);
+                        getUser.FullName = Convert.ToString(dr["FullName"] == DBNull.Value ? default : dr["FullName"]);
+                        getUser.Mobile = (long)Convert.ToDouble(dr["Mobile"] == DBNull.Value ? default : dr["Mobile"]);
+                        userList.Add(getUser);
+
+                    }
+                    return userList;
+                }
+                else
+                {
+                    con.Close();
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+=======
             if (string.IsNullOrEmpty(password))
                 return "";
             var bytes = Convert.FromBase64String(password);
             var result = Encoding.UTF8.GetString(bytes);
             result = result.Substring(0, result.Length - Key.Length);
             return result;
+>>>>>>> 1998636c45e217741994d1041f7eaae98a488d86
         }
     }
 }
